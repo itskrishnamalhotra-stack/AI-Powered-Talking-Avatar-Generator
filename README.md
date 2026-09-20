@@ -1,26 +1,46 @@
-This project was built in 2025
+# AI-Powered Talking Avatar Generator
 
-it will not work directly because i have removed my api keys
+A modular generative-video pipeline that converts one portrait and an audio recording into a high-resolution, lip-synchronised talking-avatar video.
 
-Developed a sophisticated, multi-session AI pipeline that transforms a single static image and an audio file into a high-resolution, lip-synced talking avatar video. The project integrates several state-of-the-art generative AI models to handle distinct stages of the process: audio transcription, visual prompt generation, video synthesis, lip-synchronization, and final enhancement.
+> Built in 2025 and designed around Google Colab GPU constraints.
 
-To overcome the GPU memory and runtime limitations of Google Colab, the entire workflow was strategically modularized into four independent sessions, ensuring stable and successful execution from start to finish.
+## Pipeline
 
-The pipeline operates in these sequential stages:
+1. **Transcription** — Whisper converts the audio into timestamped segments.
+2. **Motion planning** — Gemini turns the transcript into visual action and expression prompts.
+3. **Video generation** — Wan 2.1 generates short clips while the previous clip's final frame helps maintain continuity.
+4. **Composition** — MoviePy joins the generated segments.
+5. **Lip synchronisation** — Wav2Lip aligns mouth motion with the original speech.
+6. **Enhancement** — Real-ESRGAN optionally upscales and restores detail.
 
-Session 1: Audio Transcription:
+## Why the workflow is split into sessions
 
-Utilized OpenAI's Whisper model to transcribe the input audio, generating precise text segments with timestamps. This data forms the narrative foundation for the video.
-Session 2: Dynamic Video Generation:
+Running transcription, diffusion/video generation, lip-sync and super-resolution together can exceed a free Colab runtime's memory. The project separates these stages so intermediate assets can be saved and each model can be loaded independently.
 
-Visual Prompting: The transcribed text from each segment was fed into Google's Gemini API to generate creative, descriptive prompts of physical actions and expressions (e.g., "a girl talking and gesturing with her hands").
-Iterative Synthesis: Using a ComfyUI workflow powered by the Wan 2.1 text-to-video model, these prompts were used to generate short video clips. To ensure continuity, the last frame of the preceding clip served as the initial image for the next, creating a seamless animation.
-Stitching: All generated clips were concatenated into a single, silent video using MoviePy.
-Session 3: Lip Synchronization:
+## Repository layout
 
-The silent video and the original source audio were processed by Wav2Lip. This model meticulously adjusted the avatar's mouth movements in the video to align perfectly with the spoken words, achieving realistic lip-syncing.
-Session 4: AI Video Enhancement (Optional):
+| Notebook | Responsibility |
+| --- | --- |
+| `Session_1_(Audio_to_Segment).ipynb` | Transcription and timestamp preparation |
+| `Session_2_(Image_to_Video).ipynb` | Prompt planning and video generation |
+| `Session_3_(Video_and_Audio_to_Lipsync).ipynb` | Wav2Lip inference |
+| `Session_4_(Enhance_the_Video_using_ESRGAN_(Optional)).ipynb` | Optional super-resolution |
 
-The final lip-synced video was passed through Real-ESRGAN for super-resolution. This step upscales the video and enhances facial details, resulting in a crisp, professional-quality output.
-Developed a sophisticated, multi-session AI pipeline that transforms a single static image and an audio file into a high-resolution, lip-synced talking avatar video. The project integrates several state-of-the-art generative AI models to handle distinct stages of the process: audio transcription, visual prompt generation, video synthesis, lip-synchronization, and final enhancement. To overcome the GPU memory and runtime limitations of Google Colab, the entire workflow was strategically modularized into four independent sessions, ensuring stable and successful execution from start to finish. The pipeline operates in these sequential stages: Session 1: Audio Transcription: Utilized OpenAI's Whisper model to transcribe the input audio, generating precise text segments with timestamps. This data forms the narrative foundation for the video. Session 2: Dynamic Video Generation: Visual Prompting: The transcribed text from each segment was fed into Google's Gemini API to generate creative, descriptive prompts of physical actions and expressions (e.g., "a girl talking and gesturing with her hands"). Iterative Synthesis: Using a ComfyUI workflow powered by the Wan 2.1 text-to-video model, these prompts were used to generate short video clips. To ensure continuity, the last frame of the preceding clip served as the initial image for the next, creating a seamless animation. Stitching: All generated clips were concatenated into a single, silent video using MoviePy. Session 3: Lip Synchronization: The silent video and the original source audio were processed by Wav2Lip. This model meticulously adjusted the avatar's mouth movements in the video to align perfectly with the spoken words, achieving realistic lip-syncing. Session 4: AI Video Enhancement (Optional): The final lip-synced video was passed through Real-ESRGAN for super-resolution. This step upscales the video and enhances facial details, resulting in a crisp, professional-quality output.
-Skills: OpenAI Whisper · Google Gemini · Wav2Lip · Real-ESRGAN · Wan 2.1 (DiT) · PyTorch · ComfyUI · Transformers · Python · Jupyter/Google Colab · FFmpeg · MoviePy · OpenCV · Librosa · Multi-Modal AI · Text-to-Video Synthesis · Lip Synchronization · AI Super-Resolution · API Integration · AI Workflow Automation · Generative AI · Machine Learning · Deep Learning · Natural Language Processing (NLP) · Computer Vision · Software Architecture · Problem-Solving
+## Tech stack
+
+Python · PyTorch · Whisper · Gemini API · Wan 2.1 · ComfyUI · Wav2Lip · Real-ESRGAN · FFmpeg · MoviePy · OpenCV
+
+## Running it
+
+Open the notebooks in Colab and execute them in numerical order. API credentials and personal Drive paths are intentionally excluded. Configure credentials through Colab Secrets or environment variables rather than placing them inside a notebook.
+
+## Current limitations
+
+- The workflow is notebook-based rather than a single packaged application.
+- Model URLs and dependencies may need updating as upstream projects change.
+- Identity and temporal consistency depend on the selected checkpoint and source image.
+- Generated media should only be created with appropriate consent and usage rights.
+
+## Status
+
+Research and portfolio prototype demonstrating multi-model orchestration under limited GPU memory.
