@@ -1,3 +1,5 @@
+This project was built in 2025
+
 it will not work directly because i have removed my api keys
 
 Developed a sophisticated, multi-session AI pipeline that transforms a single static image and an audio file into a high-resolution, lip-synced talking avatar video. The project integrates several state-of-the-art generative AI models to handle distinct stages of the process: audio transcription, visual prompt generation, video synthesis, lip-synchronization, and final enhancement.
